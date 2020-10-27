@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button>点击添加iframe</button>
+</body>
+
+</html>
+
+
+<script>
+
+
+    function createIframe() {
+        console.log(this)
+        iframe = document.createElement('iframe')
+        iframe.style.display = 'none'
+        document.body.appendChild(iframe)
+        return iframe
+    }
+    // 书上这里没有使用自动执行函数，但是自己在index6.html中使用了，且效果是相同的
+    let getSingle = function (fn) {
+        let instance
+        return function () {
+            if (!instance) {
+                instance = fn.apply(this, arguments)
+            }
+            return instance
+        }
+    }
+    var createSingleIframe = getSingle(createIframe)
+    document.querySelector('button').addEventListener('click', () => {
+        // 这样才是单例
+        const dom = createSingleIframe()
+        // 下面这样就不是单例
+        // const dom =  getSingle(createIframe)()
+        dom.style.display = 'block'
+    })
+   
+/**
+     * let instance
+     * if(!instance){
+     *    instance = ...
+     * }
+     * return instance
+     */
+
+
+
+
+
+
+
+
+
+
+
+
+</script>

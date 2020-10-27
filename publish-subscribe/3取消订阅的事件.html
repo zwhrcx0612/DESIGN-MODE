@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        var event = {
+            clientList:{},
+            listen:function(key,fn){
+                if(!this.clientList[key]){
+                    this.clientList[key] = []
+                }
+                this.clientList[key].push(fn)
+            },
+            trigger: function(){
+                const key = Array.prototype.shift.call(arguments)
+                fns = this.clientList[key]
+                if(!fns || fns.length === 0){
+                    return false
+                }
+                fns.forEach(fn => {
+                    fn.apply(this,arguments)
+                })
+            },
+            remove:function(key,fn){
+                var fns = this.clientList[key]
+                if(!fns){
+                    return false
+                }
+                if(!fn){
+                   fns&&(fns.length = 0)
+                }else {
+                    for(var l = fns.length - 1; l >=0 ;l--){
+                        var _fn = fns[l]
+                        if(_fn === fn){
+                            // 比较的是地址值
+                            fns.splice(l,1)
+                        }
+                    }
+                }
+            }
+        }
+
+        var installEvent = function(obj){
+            for(let i in event){
+                obj[i] = event[i]
+            }
+        }
+
+        var salesOffices = {}
+        installEvent(salesOffices)
+        var fn1 = function(price,squareMeter){
+            console.log('square88价格：',price)
+        }
+
+        salesOffices.listen('square88',fn1)
+
+        salesOffices.listen('square99',function(price,squareMeter){
+            console.log('square99价格：',price)
+        })
+        salesOffices.remove('square88',fn1)
+        salesOffices.trigger('square88',20000)
+        salesOffices.trigger('square99',80000)
+    </script>
+</body>
+</html>

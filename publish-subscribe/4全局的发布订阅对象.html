@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        var Event = (function(){
+            var clientList = {},
+            listen,
+            trigger,
+            remove
+            listen = function(key,fn){
+                    if(!clientList[key]){
+                        clientList[key] = []
+                    }
+                    clientList[key].push(fn)
+            }
+            trigger = function(){
+                const key = Array.prototype.shift.call(arguments)
+                fns = clientList[key]
+                if(!fns || fns.length === 0){
+                    return false
+                }
+                fns.forEach(fn => {
+                    fn.apply(this,arguments)
+                })
+            }
+            remove = function(key,fn){
+                // 判断传入的key，clientList是否存在
+                const fns = clientList[key]
+                if(!fns){
+                    return false
+                }
+                // 判断是否传入了具体的方法
+                if(!fn){
+                    fns&&(fns.length = 0)
+                }else {
+                    for(var l = fns.length - 1; l >=0 ;l--){
+                        var _fn = fns[l]
+                        if(_fn === fn){
+                            // 比较的是地址值
+                            fns.splice(l,1)
+                        }
+                    }
+                }
+                // 
+            }
+
+            return {
+                listen:listen,
+                trigger:trigger,
+                remove:remove
+            }
+        })()
+
+
+      
+
+        
+
+        Event.listen('square99',function(price,squareMeter){
+            console.log('square99价格：',price)
+        })
+
+        Event.trigger('square99',20000)
+     
+    </script>
+</body>
+</html>

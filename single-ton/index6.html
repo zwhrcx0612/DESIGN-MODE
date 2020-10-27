@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button>点击添加iframe</button>
+</body>
+</html>
+
+
+<script>
+
+    /**
+ * 通用的惰性单例，也就是所谓的懒汉式
+ */
+
+// var createIframe = (function(){
+//     let iframe 
+//     return function(){
+//         if(!iframe){
+//             iframe = document.createElement('iframe')
+//             iframe.style.display = 'none'
+//             document.body.appendChild(iframe)
+//         }
+//         return iframe
+//     }
+// })()
+document.querySelector('button').addEventListener('click',() => {
+    getSingle(createIframe).style.display = 'block'
+})
+function createIframe() {
+    console.log(this)
+    iframe = document.createElement('iframe')
+    iframe.style.display = 'none'
+    document.body.appendChild(iframe)
+    return iframe
+}
+/**
+ * let instance
+ * if(!instance){
+ *    instance = ...
+ * }
+ * return instance
+ */
+
+ let getSingle = (function(){
+     let instance 
+     return function(fn){
+        if(!instance){
+            instance = fn()
+        }
+        return instance
+     }
+ })()
+
+
+
+
+
+
+
+
+
+
+</script>
