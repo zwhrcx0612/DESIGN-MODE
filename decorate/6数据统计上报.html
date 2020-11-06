@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button>点击弹出登录框</button>
+    <script>
+        // 新函数先执行
+        var before = function(fn,beforefn){
+            return function(){
+                beforefn.call(this,arguments)
+                
+                return fn.call(this,arguments)
+            }
+        }
+        // 新函数后执行
+        var after = function(fn,beforefn){
+            return function(){
+                var ret = fn.call(this,arguments)
+                beforefn.call(this,arguments)
+                
+                return ret
+            }
+        }
+
+
+        var showLogin = function(){
+            console.log('显示登陆框')
+        }
+
+
+        var log = function(){
+            console.log('上报登录结果')
+        }
+
+        showLogin = after(showLogin,log)
+        document.getElementsByTagName('button')[0].onclick = showLogin
+    </script>
+</body>
+</html>

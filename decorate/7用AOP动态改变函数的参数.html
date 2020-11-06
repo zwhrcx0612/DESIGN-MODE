@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        // 新函数先执行,beforefn是新函数
+        var before = function(fn,beforefn){
+            return function(){
+                beforefn.apply(this,arguments)
+                return fn.apply(this,arguments)
+            }
+        }
+        var func = function(params){
+            console.log(params)
+        }
+
+        func = before(func,function(params){
+            params.b = 2
+        })
+
+        func({a:1})
+    </script>
+</body>
+</html>

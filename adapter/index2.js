@@ -15,6 +15,7 @@ function renderMap(obj) {
         obj.show()
     }
 }
+// 这个是多态的例子
 console.log(typeof baiduMap.show)
 renderMap(googleMap)
 /**
