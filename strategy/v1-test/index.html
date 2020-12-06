@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action="" id="registerForm">
+        用户名<input type="text" name="username">
+        密码<input type="text" name="password">
+        手机号<input type="text" name="phoneNumber">
+
+        <button>提交</button>
+    </form>
+
+    <script>
+        // 表单校验
+        var registerForm = document.getElementById('registerForm')
+        // 一般人的写法
+        // registerForm.onsubmit = function(){
+        //     if(registerForm.username.value === ''){
+        //         alert('用户名不能为空')
+        //         return false
+        //     }
+        //     if(registerForm.password.value === ''){
+        //         alert('密码长度不超过6位')
+        //         return false
+        //     }
+        //     if(!/(^1[3|5|8][0-9]{9}$)/.test(registerForm.phoneNumber.value)){
+        //         alert('手机号格式不正确')
+        //         return false
+        //     }
+        // }
+
+
+        // 自己想到的使用策略模式的写法
+        // var strategy = {
+        //     isNotEmpty:function(value,errmsg){
+        //         if(value === ''){
+        //             alert(errmsg)
+        //             return false
+        //         }
+        //     },
+        //     minLength:function(value,length,errmsg){
+        //         if(value.length < length){
+        //             alert(errmsg)
+        //             return false
+        //         }
+        //     },
+        //     isMobile:function(value,errmsg){
+        //         if(!/(^1[3|5|8][0-9]{9}$)/.test(value)){
+        //             alert(errmsg)
+        //             return false
+        //         }
+        //     }
+        // }
+
+        // registerForm.onsubmit = function(){
+        //     strategy.isNotEmpty(registerForm.username.value,'用户名不能为空')
+        //     strategy.minLength(registerForm.password.value,6,'密码长度不少于6位')
+        //     strategy.isMobile(registerForm.phoneNumber.value,'手机号格式不正确')
+        // }
+
+        // 书上给出的实现
+        /**
+         * 用到了策略模式和发布订阅模式
+         * 先收集所有的验证，start之后再统一调用
+         */
+        var strategys = {
+            isNotEmpty: function (value, errmsg) {
+                if (value === '') {
+                    return errmsg
+                }
+            },
+            minLength: function (value, length, errmsg) {
+                if (value.length < length) {
+                    return errmsg
+                }
+            },
+            isMobile: function (value, errmsg) {
+                if (!/(^1[3|5|8][0-9]{9}$)/.test(value)) {
+                    return errmsg
+                }
+            }
+        }
+        function Validate(){
+            this.cache = []
+
+        }
+        Validate.prototype.add = function(dom,rules){
+            // 需要遍历rules
+            rules.forEach(rule => {
+                this.cache.push(function(){
+                    let strategyArr = rule.strategy.split(':')
+                    let strategy = strategyArr.shift()
+                    // 添加值
+                    strategyArr.unshift(dom.value)
+                    strategyArr.push(rule.errmsg)
+                    return strategys[strategy].apply(dom,strategyArr)
+                })
+            })
+        }
+
+        Validate.prototype.start = function(){
+            for(let i = 0; i < this.cache.length; i++){
+
+                let errmsg = this.cache[i]()
+                if(errmsg){
+                    return errmsg
+                }
+            }
+        }
+
+        function validateFunction(){
+            let validate = new Validate()
+            // 注意此处add方法的参数
+            validate.add(registerForm.username,[
+                {
+                    strategy:'isNotEmpty',
+                    errmsg:'用户名不能为空'
+                },
+                {
+                    strategy:'minLength:10',
+                    errmsg:'用户名长度不能小于10'
+                },
+            ])
+            validate.add(registerForm.password,[
+                {
+                    strategy:'isNotEmpty',
+                    errmsg:'密码不能为空'
+                },
+                {
+                    strategy:'minLength:6',
+                    errmsg:'用户名长度不能小于6'
+                },
+            ])
+
+            return validate.start()
+        }
+        registerForm.onsubmit = function(){
+            var errmsg = validateFunction()
+            if(errmsg){
+                alert(errmsg)
+                return false
+            }
+        }
+
+    </script>
+</body>
+
+</html>

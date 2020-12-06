@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片加载</title>
+</head>
+
+<body>
+
+    <script>
+        // 当图片过大或者网速较慢时，加载图片比较耗时，需要使用虚拟代理来
+        // 虚拟代理：把一些开销很大的对象，延迟到真正需要的时候再去创建
+        // 自己的实现-开始
+        // 无法变更图片内容，要变更只能深入代码中去变，违反了开放-封闭原则
+        var image = new Image
+        document.body.appendChild(image)
+        image.src = './loading.gif'
+        image.onload = function(){      
+            // 这样会导致死循环
+            image.src = './zhaoliying.jpg'
+        }
+        // 自己的实现-结束
+        
+        // 下面的是书上的实现，（没有使用代理）这样的实现可以动态的改变图片的内容，且在需要调用的时候再去调用
+        // var MyImage = (function(){
+        //     var imageNode = document.createElement('img')
+        //     document.body.appendChild(imageNode)
+        //     // 这个img只是作为一个中间人，并不会在页面上生成实际的节点，最终要把值传递给imageNode，且避免了死循环的问题
+        //     var img = new Image() //这个和 document.createElement('img')的效果是相同的
+        //     img.onload = function(){
+        //         imageNode.src = img.src
+        //     }
+
+        //     return {
+        //         setSrc: function(src){
+        //             imageNode.src = './loading.gif'
+        //             img.src = src
+        //         }
+        //     }
+        // })()
+        // MyImage.setSrc('./zhaoliying.jpg')
+
+
+    </script>
+</body>
+
+</html>

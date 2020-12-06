@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>虚拟代理在惰性加载中的应用</title>
+</head>
+
+<body>
+
+    <script>
+        // 当真正打开控制台的时候再走log方法，因为不打开控制台执行log也看不到效果，
+        var miniConsole = (function () {
+            var cache = []
+            function handler(ev){
+                if(ev.keyCode = 113){
+                    var script = document.createElement('script')
+                    script.onload = function(){
+                        cache.forEach(fn => {
+                            fn()
+                        })
+                    }
+                    document.body.appendChild(script)
+                    script.src = './miniConsole.js'
+                    document.body.removeEventListener('keydown',handler)
+                }
+
+            }
+            document.body.addEventListener('keydown',handler,false)
+            return {
+                log: function (...rest) {
+                    cache.push(function(){
+                        miniConsole.log(...rest)
+                    })
+                }
+            }
+        })()
+        miniConsole.log(1)
+    </script>
+</body>
+
+</html>

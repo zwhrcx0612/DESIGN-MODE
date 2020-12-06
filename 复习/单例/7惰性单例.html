@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="login">登录</button>
+    <script>
+        /**
+         * 存在的问题：
+         * 1、违反单一职责创建对象和管理单例在同一个方法内
+         * 2、若下次需要创建iframe等等，就需要把创建div的函数几乎照抄一遍
+         * 
+         */
+
+        function createLoginDiv() {
+            let div = document.createElement('div')
+            div.innerHTML = '我是登录浮窗'
+            div.style.display = 'none'
+            document.body.appendChild(div)
+            return div
+        }
+
+       var getSingle = function(fn){
+            let result 
+            return function(){
+                if(!result){
+                    result = fn.apply(this,arguments)
+                }
+                return result
+            }
+       }
+
+       var createSingleLogin = getSingle(createLoginDiv)
+
+        document.getElementById('login').onclick = function () {
+            const div = createSingleLogin()
+            div.style.display = 'block'
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script>
+        /**
+         * 将创建对象和保证对象唯一这两个职责分开
+         * 
+         */
+
+        /**
+         * if(!instance){
+         *   ...
+         * }
+         * return instance
+         */
+
+        function Man(name) {
+            this.name = name
+        }
+
+        Man.prototype.getName = function () {
+            return this.name
+        }
+
+        var proxyMan = (function () {
+            var instance
+            return function (name) {
+                // 这个地方也可以用new创建对象？
+                if (!instance) {
+                    instance = new Man(name)
+                }
+                return instance
+            }
+        })()
+
+
+
+
+        console.log(new proxyMan('zhangsan') === new proxyMan('zhangsan'))
+
+        console.log(new proxyMan('zhangsan').getName())
+    </script>
+</body>
+
+</html>

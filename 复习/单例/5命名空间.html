@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script>
+        /**
+         * js可以使用命名空间和闭包来防止全局变量污染
+         */
+
+        /**
+         * 动态创建命名空间
+         */
+
+        var myApp = {}
+        myApp.namespace = function (name) {
+            const keys = name.split('.')
+            let current = myApp
+            keys.forEach(i => {
+                // 注意此处的逻辑 不好理解，current每走一次循环都是最新的{}
+                if (!current[i]) {
+                    current[i] = {}
+                }
+                current = current[i]
+            });
+        }
+
+        myApp.namespace('event')
+        myApp.namespace('dom.style.a')
+        console.dir(myApp)
+    </script>
+</body>
+
+</html>

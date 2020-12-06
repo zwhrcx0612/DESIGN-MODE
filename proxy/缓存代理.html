@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>缓存代理</title>
+</head>
+<body>
+    
+    <script>
+        /**
+         * 缓存代理，可以将一些开销较大的计算结果缓存起来，下次使用的时候，若参数没有变化，则直接获取缓存的结果，不需要再次计算
+         */
+
+         // 未加缓存代理的实现
+         var muti = function(...rest){
+            var a = 1
+            for(let i = 0; i < rest.length; i++){
+                a *= rest[i]
+            }
+            return a
+         }
+         console.log('未加缓存代理的实现:',muti(2,3))
+         console.log('未加缓存代理的实现:',muti(2,3,4))
+
+
+         // 加上缓存代理的实现
+
+         var proxyMuti = (function(){
+            var cache = {}
+            return function(){
+                var args = Array.prototype.join.call(arguments,',')
+                if(args in cache){
+                    return cache[args]
+                }
+                return cache[args] = muti.apply(this,arguments) 
+            }
+         })()
+
+         console.log('加缓存代理的实现:',proxyMuti(2,3,4))
+    </script>
+</body>
+
+</html>

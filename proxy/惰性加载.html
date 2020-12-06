@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>虚拟代理在惰性加载中的应用</title>
+</head>
+<body>
+    
+    <script>
+        /**
+         * 一个打印控制台的js，不想在一开始的时候加载它，而是想要在按F12创建控制台的再去调用，可以先使用
+         * 一个代理对象来代理真实js中的所有方法，比如执行log，并不会真正的执行，而是返回一个方法，并存到队列中
+         * 等到真正加载到js的时候，再逐个取出依次调用
+         */
+        var cache = []
+        var miniConsole =  {
+            log: function(){
+                var args = arguments
+                cache.push(function(){
+                    miniConsole.log.apply(miniConsole,args)
+                    miniConsole.log(args)
+                })
+            }
+        }
+        miniConsole.log(1)
+
+        document.body.addEventListener('keydown',function(ev){
+            if(ev.keyCode === 113){
+                /**
+                 * 创建script标签
+                 * 添加到body
+                 * 脚本执行完之后，遍历cache，依次执行方法
+                 */
+                var script = document.createElement('script')
+                document.body.appendChild(script)
+                script.src = './miniConsole.js'
+                script.onload = function() {
+                    cache.forEach(fn => {
+                        fn()
+                    })
+                }
+            }
+        },false)
+    </script>
+</body>
+
+</html>

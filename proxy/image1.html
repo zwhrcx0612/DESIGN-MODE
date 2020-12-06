@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片加载</title>
+</head>
+
+<body>
+
+    <script>
+        // 本体，创建img标签并返回一个接口，可以通过接口设置src
+        var myImage = (function(){
+            var img = document.createElement('img')
+            document.body.appendChild(img)
+            return {
+                setSrc: function(src){
+                    img.src = src
+                }
+            }
+        })()
+        // 代理对象，要和原对象保持相同的对外接口，且要提供loading
+        var proxyImage = (function(){
+            var img = document.createElement('img')
+            img.onload = function(){
+                // 这里为什么不会再请求一次链接
+                // this为什么是img对象
+                // 当事件处理器被调用，事件处理器内部的 this 关键字被设置为注册该事件处理器的 DOM 元素。
+                myImage.setSrc(this.src)
+            }
+            return {
+                setSrc:function(src){
+                    myImage.setSrc('./loading.gif')
+                    img.src = src
+                }
+            }
+        })()
+
+        proxyImage.setSrc('https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1916435202,742439626&fm=26&gp=0.jpg')
+    </script>
+</body>
+
+</html>

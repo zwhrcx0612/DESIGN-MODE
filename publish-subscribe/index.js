@@ -15,3 +15,25 @@ let ul = document.querySelector('#ul')
 ul.addEventListener('click', (event) => {
     console.log(event.target);
 })
+var salesOffices = {}
+
+
+salesOffices.clientList = []
+
+salesOffices.listen = function(fn){
+    salesOffices.clientList.push(fn)
+}
+
+salesOffices.trigger = function(){
+    salesOffices.clientList.forEach(fn => {
+        fn.apply(this,arguments)
+    })
+}
+
+
+salesOffices.listen(function(squareMeter,price){
+    console.log(squareMeter,price)
+})
+
+
+salesOffices.trigger(80,3000000)
